@@ -1,0 +1,78 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+
+        ArrayList<Individual> population = new ArrayList<>();
+        double summaryFitness1 = 0;
+        double summaryFitness2 ;
+        double dF;
+        int counter = 0;
+
+        population = Utils.createFirstPopulation(50);
+
+            do {
+                population = Utils.crossing(population);
+                population = Utils.reduction(population);
+
+                summaryFitness2 = Utils.calculateSummaryFitness(population);
+                dF = (summaryFitness2 - summaryFitness1 ) / summaryFitness2;
+
+                summaryFitness1 = summaryFitness2;
+                counter++;
+
+                if (counter == 1 || counter == 3 ) {
+                    for (int i = 0; i < 50 ; i ++) {
+                        Individual ind = population.get(i);
+                        System.out.printf("%d | %.2f | %s | %.2f | %.2f", i+1, ind.getFenotype(), ind.getGenotype(), ind.getTargetFunc(), ind.getFitnessFunc());
+                        System.out.println();
+                    }
+                }
+
+
+                List<Double> points = new ArrayList<>();
+                for (int i = 0 ; i < 50; i ++) {
+                    points.add(population.get(i).getFenotype());
+                    points.add(population.get(i).getTargetFunc());
+                }
+
+                Graph.createAndShowGui(points,counter);
+
+                //Thread.sleep(1000);
+
+            } while ( (Math.abs(dF) > 0.001) && counter < 25 );
+
+
+        System.out.println(counter);
+
+
+        for (int i = 0; i < 50 ; i ++) {
+            Individual ind = population.get(i);
+
+            System.out.printf("%d | %.2f | %s | %.2f | %.2f", i+1, ind.getFenotype(), ind.getGenotype(), ind.getTargetFunc(), ind.getFitnessFunc());
+
+            System.out.println();
+        }
+
+
+
+
+
+
+       // SwingUtilities.invokeLater(new Runnable() {
+            //public void run() {
+
+            //}
+      //  });
+
+
+
+
+
+
+    }
+}
