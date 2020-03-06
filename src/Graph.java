@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Graph extends JPanel{
+public class Graph extends JPanel {
 
     List<Double> points = new ArrayList<>();
     int count;
@@ -25,6 +25,10 @@ public class Graph extends JPanel{
     float[] dashl = {5,5};
     private   Stroke FITNESS_STROKE = new BasicStroke(0.5f,BasicStroke.CAP_ROUND,BasicStroke.JOIN_BEVEL,10,dashl,0);
     private static int pointWidth = 10;
+
+
+    //javaxy3d
+    //sequate values для excel
 
 
     /**

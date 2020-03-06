@@ -1,7 +1,10 @@
+import java.io.*;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Utils {
     static double step = 0.00000953674;   // 10/2^20
+    static final int n = 50;
 
 
     //Integer.parseInt( binNumber, 2);
@@ -11,7 +14,7 @@ public class Utils {
         ArrayList<Individual> population = new ArrayList<>();
         for (int i = 1; i <= n; i ++) {
             double temp = Math.pow(2,20);   // 2^20
-            double tStep = temp / 50;       // делим пространство на 50 равных частей
+            double tStep = temp / n;       // делим пространство на 50 равных частей
             population.add(new Individual(tStep * i));
         }
         return population;
@@ -81,7 +84,7 @@ public class Utils {
             }
         }
 
-        if (result.size() < 50 ) {
+        if (result.size() < n ) {
             int n = 50 - result.size();
             for (int j = 0; j < n * 2  ; j +=2) {
                 first = losers.get(j);
@@ -99,11 +102,84 @@ public class Utils {
 
     public static double calculateSummaryFitness(ArrayList<Individual> population) {
         double result = 0.0;
-        for (int i = 0 ; i < 50 ; i++) {
+        for (int i = 0 ; i < n ; i++) {
             result += population.get(i).getFitnessFunc();
         }
         return result;
     }
+
+    public static void printData(ArrayList<Individual> population) {
+        String filePath = "D:/temp/test.csv";
+
+
+        try (FileWriter wr = new FileWriter(filePath, true)) {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Number of individual");
+            sb.append(';');
+            sb.append("Fenotype");
+            sb.append(';');
+            sb.append("Genotype");
+            sb.append(';');
+            sb.append("Target func");
+            sb.append(';');
+            sb.append("Fitness func");
+            sb.append('\n');
+
+            for (int i = 0 ; i < n; i++) {
+                Individual ind = population.get(i);
+                sb.append(i+1);
+                sb.append(';');
+                sb.append("" + String.format("%.2f",ind.getFenotype()) );
+                sb.append(';');
+                sb.append("" + ind.getGenotype());
+                sb.append(';');
+                sb.append("" + String.format("%.2f", ind.getTargetFunc()) );
+                sb.append(';');
+                sb.append("" + String.format("%.2f", ind.getFitnessFunc()) );
+                sb.append('\n');
+            }
+
+
+            BufferedWriter bufferWriter = new BufferedWriter(wr);
+            bufferWriter.write(sb.toString());
+            bufferWriter.close();
+
+            System.out.println("done!");
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
+
+    public static void clearFile() {
+
+        String filePath = "D:/temp/test.csv";
+
+        try (FileWriter fstream1 = new FileWriter(filePath)) {
+            BufferedWriter out1 = new BufferedWriter(fstream1); //  создаём буферезированный поток
+            out1.write(""); // очищаем, перезаписав поверх пустую строку
+            out1.close(); // закрываем
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openExcel() {
+        Runtime rt = Runtime.getRuntime();
+        try {
+            Process p = rt.exec("C:/Program Files/Microsoft Office/root/Office16/EXCEL.exe D:/temp/test.csv");
+        } catch (IOException e) {
+            System.out.println("troubles");
+        }
+    }
+
+
 
 
 }
